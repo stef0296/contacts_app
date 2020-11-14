@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'contact-card.dart';
+import 'package:provider/provider.dart';
 
+import 'provider/contact-provider.dart';
+import 'contact-card.dart';
 import 'dummy-data.dart';
-import 'model/contact.dart';
 
 class ContactsPage extends StatefulWidget {
   @override
@@ -10,52 +11,41 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactsPageState extends State<ContactsPage> {
-  Future<List<Contact>> _contacts;
 
-  Future<List<Contact>> _getContacts() async {
-    List<Contact> contacts = dummyData;
-    await Future.delayed(Duration(seconds: 10));
-    return Future.value(contacts);
+  void _getContacts() {
+    ContactProvider contactProvider = Provider.of<ContactProvider>(context, listen: false);
+    contactProvider.contacts = dummyData;
   }
 
   @override
   void initState() {
     super.initState();
-    _contacts = _getContacts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getContacts();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Contact>>(
-      future: _contacts,
-      builder: (ctx, snapshot) {
-        List<Contact> contacts = snapshot.data;
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            return _buildListView(contacts);
-          default:
-            return _buildLoadingScreen();
-        }
-      },
-    );
-  }
-
-  Widget _buildListView(List<Contact> contacts) {
-    return ListView.builder(
-      itemBuilder: (ctx, idx) {
-        return ContactCard(contacts[idx]);
-      },
-      itemCount: contacts.length,
-    );
-  }
-
-  Widget _buildLoadingScreen() {
-    return Center(
-      child: Container(
-        width: 50,
-        height: 50,
-        child: CircularProgressIndicator(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Contacts'),
       ),
+      backgroundColor: Color(0xFFFAFAFA),
+      body: _buildListView(),
+    );
+  }
+
+  Widget _buildListView() {
+    return Consumer<ContactProvider>(
+      builder: (__, model, _) {
+        return ListView.builder(
+          itemBuilder: (_, index) {
+            return ContactCard(model.contacts[index]);
+          },
+          itemCount: model.contacts.length,
+        );
+      },
     );
   }
 }

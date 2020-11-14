@@ -1,4 +1,6 @@
+import 'package:contacts_app/provider/contact-provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'contacts-page.dart';
 
 void main() {
@@ -8,18 +10,17 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Contacts'),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: ContactProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.purple,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        backgroundColor: Color(0xFFFAFAFA),
-        body: ContactsPage(),
+        home: ContactsPage(),
       ),
     );
   }
