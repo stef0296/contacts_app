@@ -46,6 +46,11 @@ class ContactCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
+                Icons.delete,
+                color: Colors.grey[600],
+              ),
+              SizedBox(width: 15.0),
+              Icon(
                 Icons.create,
                 color: Colors.grey[600],
               ),

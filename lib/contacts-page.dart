@@ -12,7 +12,8 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsPageState extends State<ContactsPage> {
 
-  void _getContacts() {
+  void _getContacts() async {
+    await Future.delayed(Duration(milliseconds: 200));
     ContactProvider contactProvider = Provider.of<ContactProvider>(context, listen: false);
     contactProvider.contacts = dummyData;
   }
@@ -20,9 +21,7 @@ class _ContactsPageState extends State<ContactsPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getContacts();
-    });
+    _getContacts();
   }
 
   @override
