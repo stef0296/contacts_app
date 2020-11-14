@@ -22,4 +22,9 @@ class ContactProvider extends ChangeNotifier {
     _contactList.removeAt(index);
     notifyListeners();
   }
+
+  void updateContact(int index, Contact contact) {
+    _contactList[index] = contact;
+    notifyListeners();
+  }
 }

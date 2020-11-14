@@ -1,6 +1,8 @@
+import 'package:contacts_app/contact-form.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'model/contact.dart';
 import 'provider/contact-provider.dart';
 import 'contact-card.dart';
 import 'dummy-data.dart';
@@ -11,27 +13,48 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactsPageState extends State<ContactsPage> {
-
   void _getContacts() async {
     await Future.delayed(Duration(milliseconds: 200));
-    ContactProvider contactProvider = Provider.of<ContactProvider>(context, listen: false);
+    ContactProvider contactProvider =
+        Provider.of<ContactProvider>(context, listen: false);
     contactProvider.contacts = dummyData;
+  }
+
+  void _updateContact(int index, Contact contact) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ContactForm(
+          index: index,
+          contact: contact,
+        ),
+      ),
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    _getContacts();
   }
 
   @override
   Widget build(BuildContext context) {
+    _getContacts();
     return Scaffold(
       appBar: AppBar(
         title: Text('Contacts'),
       ),
       backgroundColor: Color(0xFFFAFAFA),
       body: _buildListView(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ContactForm(),
+            ),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
@@ -39,9 +62,12 @@ class _ContactsPageState extends State<ContactsPage> {
     return Consumer<ContactProvider>(
       builder: (__, model, _) {
         return ListView.builder(
-          itemBuilder: (_, index) {
-            return ContactCard(model.contacts[index]);
-          },
+          itemBuilder: (_, index) => ContactCard(
+            index: index,
+            contact: model.contacts[index],
+            updateCallback: _updateContact,
+            deleteCallback: () => model.removeContact(index),
+          ),
           itemCount: model.contacts.length,
         );
       },

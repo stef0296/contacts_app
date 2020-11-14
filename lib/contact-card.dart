@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-
 import 'model/contact.dart';
 
-
 class ContactCard extends StatelessWidget {
+  final int index;
   final Contact contact;
+  final Function updateCallback;
+  final Function deleteCallback;
 
-  ContactCard(this.contact);
+  ContactCard({
+    this.index,
+    this.contact,
+    this.updateCallback,
+    this.deleteCallback,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,14 +52,20 @@ class ContactCard extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.delete,
-                color: Colors.grey[600],
+              GestureDetector(
+                onTap: deleteCallback,
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.grey[600],
+                ),
               ),
               SizedBox(width: 15.0),
-              Icon(
-                Icons.create,
-                color: Colors.grey[600],
+              GestureDetector(
+                onTap: () => updateCallback(index, contact),
+                child: Icon(
+                  Icons.create,
+                  color: Colors.grey[600],
+                ),
               ),
               SizedBox(width: 15.0),
               Icon(
